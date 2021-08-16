@@ -29,21 +29,22 @@ class _MainScreenState extends State<MainScreen> {
   void locatePosition() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    position = currentPosition;
+    currentPosition = position;
 
     print(currentPosition);
     print(position);
-    LatLng latLngPosition = LatLng(position.latitude, position.longitude);
+    LatLng latLngPosition =
+        LatLng(currentPosition.latitude, currentPosition.longitude);
 
-    print(position);
+    print(latLngPosition);
 
-    CameraPosition cameraPosition = CameraPosition(
-        target: LatLng(position.latitude, position.longitude), zoom: 14);
+    CameraPosition cameraPosition =
+        CameraPosition(target: latLngPosition, zoom: 14);
     newGoogleMapController
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-    String address =
-        await AssistantMethods.searchCoordinateAddress(position, context);
+    String address = await AssistantMethods.searchCoordinateAddress(
+        currentPosition, context);
     print("This is your Address :: " + address);
   }
 
@@ -235,7 +236,7 @@ class _MainScreenState extends State<MainScreen> {
                           var res = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SearchScreen()));
+                                  builder: (content) => SearchScreen()));
 
                           if (res == "obtainDirection") {
                             await getPlaceDirection();

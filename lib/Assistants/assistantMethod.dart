@@ -9,11 +9,11 @@ import 'package:provider/provider.dart';
 
 class AssistantMethods {
   static Future<String> searchCoordinateAddress(
-      Position position, context) async {
+      Position currentPosition, context) async {
     String placeAdress = "";
     String st1, st2, st3, st4;
     String url =
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=AIzaSyDoWSObQL_A27DQ_LjbXJmwNtmw1AWtuec";
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=${currentPosition.latitude},${currentPosition.longitude}&key=AIzaSyDoWSObQL_A27DQ_LjbXJmwNtmw1AWtuec";
 
     var response = await RequestAssistant.getRequest(url);
 
@@ -27,8 +27,8 @@ class AssistantMethods {
       placeAdress = st1 + "," + st2 + "," + st3 + "," + st4;
 
       Address userPickUpAdress = Address();
-      userPickUpAdress.longitude = position.longitude;
-      userPickUpAdress.latitude = position.latitude;
+      userPickUpAdress.longitude = currentPosition.longitude;
+      userPickUpAdress.latitude = currentPosition.latitude;
       userPickUpAdress.placeName = placeAdress;
 
       Provider.of<AppData>(context, listen: false)
