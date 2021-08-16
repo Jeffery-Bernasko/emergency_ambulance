@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "194590925455",
+    "firebase_url": "https://skoproject-234sd.firebaseio.com",
+    "project_id": "skoproject-234sd",
+    "storage_bucket": "skoproject-234sd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194590925455:android:c6548aa67e1aeacf7186fa",
+        "android_client_info": {
+          "package_name": "com.example.emergency_ambulance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194590925455-d38o4fgfap2s7godj61hp2cmpq1rokvh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoWSObQL_A27DQ_LjbXJmwNtmw1AWtuec"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "194590925455-d38o4fgfap2s7godj61hp2cmpq1rokvh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
