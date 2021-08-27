@@ -39,12 +39,31 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   double rideDetailsContainerHeight = 0;
   double searchContainerHeight = 300.0;
 
+  bool drawerOpen = true;
+
+  resetApp() {
+    setState(() {
+      drawerOpen = true;
+      searchContainerHeight = 300.0;
+      rideDetailsContainerHeight = 0;
+      bottomPaddingOfMap = 230.0;
+
+      polylineSet.clear();
+      markersSet.clear();
+      circlesSet.clear();
+      pLineCordinate.clear();
+    });
+
+    locatePosition();
+  }
+
   void displayRideDetailsContainer() async {
     await getPlaceDirection();
     setState(() {
       searchContainerHeight = 0;
       rideDetailsContainerHeight = 0;
       bottomPaddingOfMap = 230.0;
+      drawerOpen = false;
     });
   }
 
@@ -181,11 +200,15 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
           // Button For Drawer
           Positioned(
-            top: 45.0,
+            top: 38.0,
             left: 22.0,
             child: GestureDetector(
               onTap: () {
-                scaffoldKey.currentState.openDrawer();
+                if (drawerOpen) {
+                  scaffoldKey.currentState.openDrawer();
+                } else {
+                  resetApp();
+                }
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -201,7 +224,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   child: Icon(
-                    Icons.menu,
+                    (drawerOpen) ? Icons.menu : Icons.close,
                     color: Colors.black,
                   ),
                 ),
@@ -380,8 +403,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                     style: TextStyle(fontSize: 16.0),
                                   ),
                                   Text(
-                                   ((tripDirectionDetails != null)
-                                    ? tripDirectionDetails.distanceText | ) ,
+                                    ((tripDirectionDetails != null)
+                                        ? tripDirectionDetails.distanceText
+                                        : ''),
                                     style: TextStyle(
                                         fontSize: 16.0, color: Colors.grey),
                                   )
@@ -462,8 +486,69 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 ),
               ),
             ),
-          )
+          ),
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16.0),
+                  topRight: Radius.circular(16.0),
+                ),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      spreadRadius: 0.5,
+                      blurRadius: 16.0,
+                      color: Colors.black54,
+                      offset: Offset(0.7, 0.7))
+                ]),
+            height: 250.0,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 12.0,
+                  const colorizeColors = [
+                  Colors.purple,
+                  Colors.pink,
+                  Colors.blue,
+                  Colors.yellow,
+                  Colors.red,
+        ];
 
+const colorizeTextStyle = TextStyle(
+  fontSize: 55.0,
+  fontFamily: 'Sigmatra ',
+);
+
+return SizedBox(
+  width: double.infinity,
+  child: AnimatedTextKit(
+    animatedTexts: [
+      ColorizeAnimatedText(
+        'Requesting an Ambulance',
+        textStyle: colorizeTextStyle,
+        colors: colorizeColors,
+      ),
+      ColorizeAnimatedText(
+        'Please Wait...',
+        textStyle: colorizeTextStyle,
+        colors: colorizeColors,
+      ),
+      ColorizeAnimatedText(
+        'Finding a Driver',
+        textStyle: colorizeTextStyle,
+        colors: colorizeColors,
+      ),
+    ],
+    isRepeatingAnimation: true,
+    onTap: () {
+      print("Tap Event");
+    },
+  ),
+);
+                )
+              ],
+            ),
+          )
           // Changes Might Ocurr Above This Position widget
         ],
       ),
