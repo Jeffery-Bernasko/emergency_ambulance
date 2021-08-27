@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:emergency_ambulance/Assistants/assistantMethod.dart';
+import 'package:emergency_ambulance/Models/directionDetails.dart';
 import 'package:emergency_ambulance/allScreen/searchScreen.dart';
 import 'package:emergency_ambulance/allwidgets/progressDialog.dart';
 import 'package:emergency_ambulance/dataHandler/appData.dart';
@@ -21,6 +22,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   Completer<GoogleMapController> _controller = Completer();
   GoogleMapController newGoogleMapController;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  DirectionDetails tripDirectionDetails;
 
   List<LatLng> pLineCordinate = [];
   Set<Polyline> polylineSet = {};
@@ -266,7 +269,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                     builder: (content) => SearchScreen()));
 
                             if (res == "obtainDirection") {
-                              await getPlaceDirection();
+                              displayRideDetailsContainer();
                             }
                           },
                         ),
@@ -328,118 +331,134 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             bottom: 0.0,
             left: 0.0,
             right: 0.0,
-            child: Container(
-              height: rideDetailsContainerHeight,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16.0),
-                    topRight: Radius.circular(16.0)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black,
-                    blurRadius: 16.0,
-                    spreadRadius: 0.5,
-                    offset: Offset(0.7, 0.7),
-                  )
-                ],
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 17.0),
-                child: Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      color: Colors.redAccent[100],
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                        ),
-                        child: Row(
-                          children: [
-                            Image.asset(
-                              "images/ambulance.png",
-                              height: 70.0,
-                              width: 80.0,
-                            ),
-                            SizedBox(
-                              width: 16.0,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Ambulance",
-                                  style: TextStyle(fontSize: 16.0),
-                                ),
-                                Text(
-                                  "10Kilometer",
-                                  style: TextStyle(
-                                      fontSize: 16.0, color: Colors.grey),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Row(
-                        children: [
-                          Icon(FontAwesomeIcons.moneyCheckAlt,
-                              size: 18.0, color: Colors.black54),
-                          SizedBox(
-                            width: 16.0,
-                          ),
-                          Text("Cash"),
-                          SizedBox(
-                            width: 6.0,
-                          ),
-                          Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.black54,
-                            size: 16.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 24.0,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      child: RaisedButton(
-                        onPressed: () {
-                          print('clicked');
-                        },
-                        color: Theme.of(context).accentColor,
+            child: AnimatedSize(
+              vsync: this,
+              curve: Curves.bounceIn,
+              duration: new Duration(milliseconds: 160),
+              child: Container(
+                height: rideDetailsContainerHeight,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16.0),
+                      topRight: Radius.circular(16.0)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black,
+                      blurRadius: 16.0,
+                      spreadRadius: 0.5,
+                      offset: Offset(0.7, 0.7),
+                    )
+                  ],
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 17.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        color: Colors.redAccent[100],
                         child: Padding(
-                          padding: EdgeInsets.all(17.0),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                          ),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                'Request',
-                                style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                              Image.asset(
+                                "images/ambulance.png",
+                                height: 70.0,
+                                width: 80.0,
                               ),
-                              Icon(
-                                FontAwesomeIcons.ambulance,
-                                color: Colors.white,
-                                size: 26.0,
+                              SizedBox(
+                                width: 16.0,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Ambulance",
+                                    style: TextStyle(fontSize: 16.0),
+                                  ),
+                                  Text(
+                                   ((tripDirectionDetails != null)
+                                    ? tripDirectionDetails.distanceText | ) ,
+                                    style: TextStyle(
+                                        fontSize: 16.0, color: Colors.grey),
+                                  )
+                                ],
+                              ),
+                              Expanded(
+                                child: Container(),
+                              ),
+                              Text(
+                                ((tripDirectionDetails != null)
+                                    ? '\$${AssistantMethods.calculateFares(tripDirectionDetails)}'
+                                    : ''),
+                                style: TextStyle(
+                                    fontSize: 16.0, color: Colors.grey),
                               )
                             ],
                           ),
                         ),
                       ),
-                    )
-                  ],
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Row(
+                          children: [
+                            Icon(FontAwesomeIcons.moneyCheckAlt,
+                                size: 18.0, color: Colors.black54),
+                            SizedBox(
+                              width: 16.0,
+                            ),
+                            Text("Cash"),
+                            SizedBox(
+                              width: 6.0,
+                            ),
+                            Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.black54,
+                              size: 16.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 24.0,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        child: RaisedButton(
+                          onPressed: () {
+                            print('clicked');
+                          },
+                          color: Theme.of(context).accentColor,
+                          child: Padding(
+                            padding: EdgeInsets.all(17.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Request',
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                                Icon(
+                                  FontAwesomeIcons.ambulance,
+                                  color: Colors.white,
+                                  size: 26.0,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -467,6 +486,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
     var details = await AssistantMethods.obtainPlaceDirectionDetails(
         pickUpLatLng, dropOffLatLng);
+
+    setState(() {
+      tripDirectionDetails = details;
+    });
 
     Navigator.pop(context);
 

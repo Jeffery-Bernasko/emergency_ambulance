@@ -68,4 +68,15 @@ class AssistantMethods {
 
     return directionDetails;
   }
+
+  static int calculateFares(DirectionDetails directionDetails) {
+    double timeTravelFare = (directionDetails.durationValue / 60) * 0.20;
+    double distanceTravelFare = (directionDetails.distanceValue / 1000) * 0.20;
+    double totalFareAmount = timeTravelFare + distanceTravelFare;
+
+    // 1$ to GHS
+    double totalLocalAmount = totalFareAmount * 6.00;
+
+    return totalLocalAmount.truncate();
+  }
 }
