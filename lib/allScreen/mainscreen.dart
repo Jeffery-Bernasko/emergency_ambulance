@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:emergency_ambulance/Assistants/assistantMethod.dart';
 import 'package:emergency_ambulance/Models/directionDetails.dart';
 import 'package:emergency_ambulance/allScreen/searchScreen.dart';
@@ -37,9 +38,19 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   Set<Circle> circlesSet = {};
 
   double rideDetailsContainerHeight = 0;
+  double requestRideContainerHeight = 0;
   double searchContainerHeight = 300.0;
 
   bool drawerOpen = true;
+
+  void displayRequestRideContainer() {
+    setState(() {
+      requestRideContainerHeight = 250.0;
+      rideDetailsContainerHeight = 0;
+      bottomPaddingOfMap = 230.0;
+      drawerOpen = true;
+    });
+  }
 
   resetApp() {
     setState(() {
@@ -456,7 +467,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
                         child: RaisedButton(
                           onPressed: () {
-                            print('clicked');
+                            displayRequestRideContainer();
                           },
                           color: Theme.of(context).accentColor,
                           child: Padding(
@@ -487,66 +498,84 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
               ),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16.0),
-                  topRight: Radius.circular(16.0),
+          Positioned(
+            bottom: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16.0),
+                    topRight: Radius.circular(16.0),
+                  ),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        spreadRadius: 0.5,
+                        blurRadius: 16.0,
+                        color: Colors.black54,
+                        offset: Offset(0.7, 0.7))
+                  ]),
+              height: requestRideContainerHeight,
+              child: Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 12.0,
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ColorizeAnimatedTextKit(
+                          onTap: () {
+                            print("Tap Event");
+                          },
+                          text: [
+                            "Requesting An Ambulance...",
+                            "Please Wait...",
+                            "Finding a Driver...",
+                          ],
+                          textStyle:
+                              TextStyle(fontSize: 55.0, fontFamily: "Sigmatra"),
+                          colors: [
+                            Colors.green,
+                            Colors.purple,
+                            Colors.pink,
+                            Colors.blue,
+                            Colors.yellow,
+                            Colors.red,
+                          ],
+                          textAlign: TextAlign.center,
+                          alignment: AlignmentDirectional
+                              .topStart // or Alignment.topLeft
+                          ),
+                    ),
+                    SizedBox(height: 22.0),
+                    Container(
+                      height: 60.0,
+                      width: 60.0,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(26.0),
+                          border:
+                              Border.all(width: 2.0, color: Colors.grey[300])),
+                      child: Icon(
+                        Icons.close,
+                        size: 25.0,
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    Container(
+                      width: double.infinity,
+                      child: Text(
+                        'Cancel Ride',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 12.0),
+                      ),
+                    )
+                  ],
                 ),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                      spreadRadius: 0.5,
-                      blurRadius: 16.0,
-                      color: Colors.black54,
-                      offset: Offset(0.7, 0.7))
-                ]),
-            height: 250.0,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 12.0,
-                  const colorizeColors = [
-                  Colors.purple,
-                  Colors.pink,
-                  Colors.blue,
-                  Colors.yellow,
-                  Colors.red,
-        ];
-
-const colorizeTextStyle = TextStyle(
-  fontSize: 55.0,
-  fontFamily: 'Sigmatra ',
-);
-
-return SizedBox(
-  width: double.infinity,
-  child: AnimatedTextKit(
-    animatedTexts: [
-      ColorizeAnimatedText(
-        'Requesting an Ambulance',
-        textStyle: colorizeTextStyle,
-        colors: colorizeColors,
-      ),
-      ColorizeAnimatedText(
-        'Please Wait...',
-        textStyle: colorizeTextStyle,
-        colors: colorizeColors,
-      ),
-      ColorizeAnimatedText(
-        'Finding a Driver',
-        textStyle: colorizeTextStyle,
-        colors: colorizeColors,
-      ),
-    ],
-    isRepeatingAnimation: true,
-    onTap: () {
-      print("Tap Event");
-    },
-  ),
-);
-                )
-              ],
+              ),
             ),
           )
           // Changes Might Ocurr Above This Position widget
