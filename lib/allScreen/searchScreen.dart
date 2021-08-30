@@ -21,10 +21,6 @@ class _SearchScreenState extends State<SearchScreen> {
   List<PlacePredictions> placePredictionList = [];
   @override
   Widget build(BuildContext context) {
-    String placeAdress =
-        Provider.of<AppData>(context).pickUpLocation.placeName ?? " ";
-    pickuptextEdittingController.text = placeAdress;
-
     return Scaffold(
       body: Column(
         children: [
@@ -182,7 +178,7 @@ class _SearchScreenState extends State<SearchScreen> {
       if (res == "failed") {
         return;
       }
-      if (res["status" == "OK"]) {
+      if (res["status"] == "OK") {
         var predictions = res["predictions"];
 
         var placeList = (predictions as List)

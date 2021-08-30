@@ -3,9 +3,13 @@ import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:emergency_ambulance/Assistants/assistantMethod.dart';
 import 'package:emergency_ambulance/Models/directionDetails.dart';
+import 'package:emergency_ambulance/allScreen/loginScreen.dart';
 import 'package:emergency_ambulance/allScreen/searchScreen.dart';
 import 'package:emergency_ambulance/allwidgets/progressDialog.dart';
+import 'package:emergency_ambulance/configMap.dart';
 import 'package:emergency_ambulance/dataHandler/appData.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -43,6 +47,52 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   bool drawerOpen = true;
 
+  DatabaseReference rideRequestRef;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    AssistantMethods.getCurrentOnlineUserInfo();
+  }
+
+  void saveRideRequest() {
+    rideRequestRef =
+        FirebaseDatabase.instance.reference().child("Ride Requests").push();
+
+    var pickUp = Provider.of<AppData>(context, listen: false).pickUpLocation;
+    var dropOff = Provider.of<AppData>(context, listen: false).dropOffLocation;
+
+    Map pickUpLocMap = {
+      "latitude": pickUp.latitude.toString(),
+      "longitude": pickUp.longitude.toString(),
+    };
+
+    Map dropOffLocMap = {
+      "latitude": dropOff.latitude.toString(),
+      "longitude": dropOff.longitude.toString(),
+    };
+
+    Map rideInfoMap = {
+      "driver_id": "waiting",
+      "payment_method": "cash",
+      "pickup": pickUpLocMap,
+      "dropOff": dropOffLocMap,
+      "created_at": DateTime.now().toString(),
+      "rider_name": userCurrentInfo.name,
+      "rider_phone": userCurrentInfo.phone,
+      "pickup_address": pickUp.placeName,
+      "dropoff_address": dropOff.placeName,
+    };
+
+    rideRequestRef.set(rideInfoMap);
+  }
+
+  void cancelRideRequest() {
+    rideRequestRef.remove();
+  }
+
   void displayRequestRideContainer() {
     setState(() {
       requestRideContainerHeight = 250.0;
@@ -50,6 +100,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       bottomPaddingOfMap = 230.0;
       drawerOpen = true;
     });
+
+    saveRideRequest();
   }
 
   resetApp() {
@@ -57,6 +109,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       drawerOpen = true;
       searchContainerHeight = 300.0;
       rideDetailsContainerHeight = 0;
+      requestRideContainerHeight = 0;
       bottomPaddingOfMap = 230.0;
 
       polylineSet.clear();
@@ -178,6 +231,20 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 title: Text(
                   "About",
                   style: TextStyle(fontSize: 16.0),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, LoginScreen.idScreen, (route) => false);
+                },
+                child: ListTile(
+                  leading: Icon(Icons.info),
+                  title: Text(
+                    "Log Out",
+                    style: TextStyle(fontSize: 16.0),
+                  ),
                 ),
               )
             ],
@@ -527,41 +594,47 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                     SizedBox(
                       width: double.infinity,
                       child: ColorizeAnimatedTextKit(
-                          onTap: () {
-                            print("Tap Event");
-                          },
-                          text: [
-                            "Requesting An Ambulance...",
-                            "Please Wait...",
-                            "Finding a Driver...",
-                          ],
-                          textStyle:
-                              TextStyle(fontSize: 55.0, fontFamily: "Sigmatra"),
-                          colors: [
-                            Colors.green,
-                            Colors.purple,
-                            Colors.pink,
-                            Colors.blue,
-                            Colors.yellow,
-                            Colors.red,
-                          ],
-                          textAlign: TextAlign.center,
-                          alignment: AlignmentDirectional
-                              .topStart // or Alignment.topLeft
-                          ),
+                        onTap: () {
+                          print("Tap Event");
+                        },
+                        text: [
+                          "Requesting An Ambulance...",
+                          "Please Wait...",
+                          "Finding a Driver...",
+                        ],
+                        textStyle:
+                            TextStyle(fontSize: 55.0, fontFamily: "Sigmatra"),
+                        colors: [
+                          Colors.green,
+                          Colors.purple,
+                          Colors.pink,
+                          Colors.blue,
+                          Colors.yellow,
+                          Colors.red,
+                        ],
+                        textAlign: TextAlign.center,
+
+                        // or Alignment.topLeft
+                      ),
                     ),
                     SizedBox(height: 22.0),
-                    Container(
-                      height: 60.0,
-                      width: 60.0,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(26.0),
-                          border:
-                              Border.all(width: 2.0, color: Colors.grey[300])),
-                      child: Icon(
-                        Icons.close,
-                        size: 25.0,
+                    GestureDetector(
+                      onTap: () {
+                        cancelRideRequest();
+                        resetApp();
+                      },
+                      child: Container(
+                        height: 60.0,
+                        width: 60.0,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(26.0),
+                            border: Border.all(
+                                width: 2.0, color: Colors.grey[300])),
+                        child: Icon(
+                          Icons.close,
+                          size: 25.0,
+                        ),
                       ),
                     ),
                     SizedBox(height: 10.0),
