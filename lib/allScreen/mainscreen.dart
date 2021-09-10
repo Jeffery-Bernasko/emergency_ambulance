@@ -57,6 +57,20 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     AssistantMethods.getCurrentOnlineUserInfo();
   }
 
+  static const colorizeColors = [
+    Colors.green,
+    Colors.purple,
+    Colors.pink,
+    Colors.blue,
+    Colors.yellow,
+    Colors.red,
+  ];
+
+  static const colorizeTextStyle = TextStyle(
+    fontSize: 55.0,
+    fontFamily: 'Horizon',
+  );
+
   void saveRideRequest() {
     rideRequestRef =
         FirebaseDatabase.instance.reference().child("Ride Requests").push();
@@ -149,8 +163,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     newGoogleMapController
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-    String address = await AssistantMethods.searchCoordinateAddress(
-        currentPosition, context);
+    String address =
+        await AssistantMethods.searchCoordinateAddress(position, context);
     print("This is your Address :: " + address);
   }
 
@@ -592,31 +606,30 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                       height: 12.0,
                     ),
                     SizedBox(
-                      width: double.infinity,
-                      child: ColorizeAnimatedTextKit(
-                        onTap: () {
-                          print("Tap Event");
-                        },
-                        text: [
-                          "Requesting An Ambulance...",
-                          "Please Wait...",
-                          "Finding a Driver...",
-                        ],
-                        textStyle:
-                            TextStyle(fontSize: 55.0, fontFamily: "Sigmatra"),
-                        colors: [
-                          Colors.green,
-                          Colors.purple,
-                          Colors.pink,
-                          Colors.blue,
-                          Colors.yellow,
-                          Colors.red,
-                        ],
-                        textAlign: TextAlign.center,
-
-                        // or Alignment.topLeft
-                      ),
-                    ),
+                        width: double.infinity,
+                        child: AnimatedTextKit(
+                          animatedTexts: [
+                            ColorizeAnimatedText(
+                              'Requesting Ride',
+                              textStyle: colorizeTextStyle,
+                              colors: colorizeColors,
+                            ),
+                            ColorizeAnimatedText(
+                              'Please wait .......',
+                              textStyle: colorizeTextStyle,
+                              colors: colorizeColors,
+                            ),
+                            ColorizeAnimatedText(
+                              'Finding an Ambulance',
+                              textStyle: colorizeTextStyle,
+                              colors: colorizeColors,
+                            ),
+                          ],
+                          isRepeatingAnimation: true,
+                          onTap: () {
+                            print("Tap Event");
+                          },
+                        )),
                     SizedBox(height: 22.0),
                     GestureDetector(
                       onTap: () {
