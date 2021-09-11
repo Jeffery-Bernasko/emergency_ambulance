@@ -22,10 +22,11 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     String placeAdress =
-        Provider.of<AppData>(context).pickUpLocation?.placeName ?? "";
+        Provider.of<AppData>(context).pickUpLocation.placeName ?? "";
     pickUpTextEditingController.text = placeAdress;
+
     print(pickUpTextEditingController);
-    // placeAdress = pickUpTextEditingController.text;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -88,6 +89,9 @@ class _SearchScreenState extends State<SearchScreen> {
                               padding: EdgeInsets.all(3.0),
                               child: TextField(
                                 controller: pickUpTextEditingController,
+                                // onChanged: (val) {
+                                //findPlace(val);
+                                //},
                                 decoration: InputDecoration(
                                   hintText: "PickUp Location",
                                   fillColor: Colors.grey[400],
@@ -150,6 +154,9 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
 
             // Tile for Prediction
+            SizedBox(
+              height: 10.0,
+            ),
             (placePredictionList.length > 0)
                 ? Padding(
                     padding:
