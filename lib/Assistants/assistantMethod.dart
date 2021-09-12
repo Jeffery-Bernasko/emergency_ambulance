@@ -6,6 +6,7 @@ import 'package:emergency_ambulance/configMap.dart';
 import 'package:emergency_ambulance/dataHandler/appData.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -39,6 +40,19 @@ class AssistantMethods {
     }
 
     return placeAdress;
+  }
+
+  static Future<String> placeName(
+      Position currentPosition, BuildContext context) async {
+    String url =
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=${currentPosition.latitude},${currentPosition.longitude}&key=AIzaSyDoWSObQL_A27DQ_LjbXJmwNtmw1AWtuec";
+
+    var response = await RequestAssistant.getRequest(url);
+    // String place = response["plus_code"]["compound_code"];
+    String place = response["results"][0]["address_components"][0]["long_name"];
+    print(place);
+
+    return place;
   }
 
   static Future<DirectionDetails> obtainPlaceDirectionDetails(

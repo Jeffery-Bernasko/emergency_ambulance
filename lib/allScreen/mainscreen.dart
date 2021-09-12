@@ -55,6 +55,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     super.initState();
 
     AssistantMethods.getCurrentOnlineUserInfo();
+    locatePosition();
   }
 
   static const colorizeColors = [
@@ -67,7 +68,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   ];
 
   static const colorizeTextStyle = TextStyle(
-    fontSize: 55.0,
+    fontSize: 35.0,
     fontFamily: 'Horizon',
   );
 
@@ -109,7 +110,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   void displayRequestRideContainer() {
     setState(() {
-      requestRideContainerHeight = 250.0;
+      requestRideContainerHeight = 280.0;
       rideDetailsContainerHeight = 0;
       bottomPaddingOfMap = 230.0;
       drawerOpen = true;
@@ -121,7 +122,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   resetApp() {
     setState(() {
       drawerOpen = true;
-      searchContainerHeight = 300.0;
+      searchContainerHeight = 200.0;
       rideDetailsContainerHeight = 0;
       requestRideContainerHeight = 0;
       bottomPaddingOfMap = 230.0;
@@ -139,7 +140,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     await getPlaceDirection();
     setState(() {
       searchContainerHeight = 0;
-      rideDetailsContainerHeight = 0;
+      rideDetailsContainerHeight = 280;
+      requestRideContainerHeight = 0;
       bottomPaddingOfMap = 230.0;
       drawerOpen = false;
     });
@@ -383,7 +385,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                 MaterialPageRoute(
                                     builder: (content) => SearchScreen()));
 
-                            if (res == "obtainDirection") {
+                            if (res == "Obtain Direction") {
                               displayRideDetailsContainer();
                             }
                           },

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:emergency_ambulance/Assistants/assistantMethod.dart';
 import 'package:emergency_ambulance/Assistants/requestAssistant.dart';
 import 'package:emergency_ambulance/Models/address.dart';
 import 'package:emergency_ambulance/Models/placePrediction.dart';
@@ -10,11 +11,7 @@ import 'package:emergency_ambulance/dataHandler/appData.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:emergency_ambulance/Models/address.dart';
-import 'package:emergency_ambulance/dataHandler/appData.dart';
-import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
-
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -25,24 +22,33 @@ class _SearchScreenState extends State<SearchScreen> {
   TextEditingController pickUpTextEditingController = TextEditingController();
   TextEditingController dropOffTextEditingController = TextEditingController();
   List<PlacePredictions> placePredictionList = [];
-  
+
   // 1 -- get location
-  Future<String> location() async {
-    Position pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    Address addr = Address("", "", "", pos.longitude, pos.latitude);
-    Provider.of<AppData>(context).updatePickUpLocationAddress(addr);
-    String placeAdress = Provider.of<AppData>(context).pickUpLocation.placeName ?? "";
-    return placeAddress;
+  void location() async {
+    Position pos =
+        await Provider.of<AppData>(context, listen: false).location(context);
+    print("pickup location : ${pos.longitude}");
+
+    locationPlaceName(pos);
+
+    pickUpTextEditingController.text = "${pos.latitude}, ${pos.longitude}";
   }
-  
+
+  void locationPlaceName(Position currentPosition) async {
+    String place = await AssistantMethods.placeName(currentPosition, context);
+    print("pickup place: $place");
+    pickUpTextEditingController.text = place;
+  }
+
   // 2 -- provide for textfield during init
   @override
   void initState() {
+    super.initState();
+    print("init state");
     location();
-    pickUpTextEditingController.text = placeAdress;
-    print(pickUpTextEditingController);
+    // pickUpTextEditingController.text = placeAdress;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,9 +113,6 @@ class _SearchScreenState extends State<SearchScreen> {
                               padding: EdgeInsets.all(3.0),
                               child: TextField(
                                 controller: pickUpTextEditingController,
-                                // onChanged: (val) {
-                                //findPlace(val);
-                                //},
                                 decoration: InputDecoration(
                                   hintText: "PickUp Location",
                                   fillColor: Colors.grey[400],
