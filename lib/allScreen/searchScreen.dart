@@ -10,6 +10,12 @@ import 'package:emergency_ambulance/dataHandler/appData.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:emergency_ambulance/Models/address.dart';
+import 'package:emergency_ambulance/dataHandler/appData.dart';
+import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
+
+
 class SearchScreen extends StatefulWidget {
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -19,14 +25,26 @@ class _SearchScreenState extends State<SearchScreen> {
   TextEditingController pickUpTextEditingController = TextEditingController();
   TextEditingController dropOffTextEditingController = TextEditingController();
   List<PlacePredictions> placePredictionList = [];
+  
+  // 1 -- get location
+  Future<String> location() async {
+    Position pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Address addr = Address("", "", "", pos.longitude, pos.latitude);
+    Provider.of<AppData>(context).updatePickUpLocationAddress(addr);
+    String placeAdress = Provider.of<AppData>(context).pickUpLocation.placeName ?? "";
+    return placeAddress;
+  }
+  
+  // 2 -- provide for textfield during init
+  @override
+  void initState() {
+    location();
+    pickUpTextEditingController.text = placeAdress;
+    print(pickUpTextEditingController);
+  }
+  
   @override
   Widget build(BuildContext context) {
-    String placeAdress =
-        Provider.of<AppData>(context).pickUpLocation.placeName ?? "";
-    pickUpTextEditingController.text = placeAdress;
-
-    print(pickUpTextEditingController);
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
