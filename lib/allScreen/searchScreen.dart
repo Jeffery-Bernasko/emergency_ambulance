@@ -29,18 +29,20 @@ class _SearchScreenState extends State<SearchScreen> {
   // 1 -- get location
   Future<String> location() async {
     Position pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    Address addr = Address("", "", "", pos.longitude, pos.latitude);
+    Address addr = Address();
+    addr.longitude = pos.longitude;
+    addr.laitude = pos.latitude;
     Provider.of<AppData>(context).updatePickUpLocationAddress(addr);
-    String placeAdress = Provider.of<AppData>(context).pickUpLocation.placeName ?? "";
-    return placeAddress;
+    return Provider.of<AppData>(context).pickUpLocation.placeName ?? "";
   }
   
   // 2 -- provide for textfield during init
   @override
   void initState() {
-    location();
-    pickUpTextEditingController.text = placeAdress;
-    print(pickUpTextEditingController);
+    String placeAddress = await location();
+    if (placeAddress != "")
+      pickUpTextEditingController.text = placeAdress;
+    print(placeAddress);
   }
   
   @override
