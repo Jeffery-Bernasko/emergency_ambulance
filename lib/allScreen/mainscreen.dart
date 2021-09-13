@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:emergency_ambulance/Assistants/assistantMethod.dart';
 import 'package:emergency_ambulance/Models/directionDetails.dart';
+import 'package:emergency_ambulance/allScreen/about.dart';
 import 'package:emergency_ambulance/allScreen/loginScreen.dart';
 import 'package:emergency_ambulance/allScreen/searchScreen.dart';
 import 'package:emergency_ambulance/allwidgets/progressDialog.dart';
@@ -43,7 +44,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   double rideDetailsContainerHeight = 0;
   double requestRideContainerHeight = 0;
-  double searchContainerHeight = 300.0;
+  double searchContainerHeight = 200.0;
 
   bool drawerOpen = true;
 
@@ -242,11 +243,19 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                   style: TextStyle(fontSize: 16.0),
                 ),
               ),
-              ListTile(
-                leading: Icon(Icons.info),
-                title: Text(
-                  "About",
-                  style: TextStyle(fontSize: 16.0),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => About()),
+                  );
+                },
+                child: ListTile(
+                  leading: Icon(Icons.info),
+                  title: Text(
+                    "About",
+                    style: TextStyle(fontSize: 16.0),
+                  ),
                 ),
               ),
               GestureDetector(
@@ -501,20 +510,20 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                         ? tripDirectionDetails.distanceText
                                         : ''),
                                     style: TextStyle(
-                                        fontSize: 16.0, color: Colors.grey),
+                                        fontSize: 16.0, color: Colors.white),
                                   )
                                 ],
                               ),
                               Expanded(
                                 child: Container(),
                               ),
-                              Text(
-                                ((tripDirectionDetails != null)
-                                    ? '\$${AssistantMethods.calculateFares(tripDirectionDetails)}'
-                                    : ''),
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.grey),
-                              )
+                              // Text(
+                              // ((tripDirectionDetails != null)
+                              //   ? '\$${AssistantMethods.calculateFares(tripDirectionDetails)}'
+                              // : ''),
+                              // style: TextStyle(
+                              // fontSize: 16.0, color: Colors.white),
+                              //)
                             ],
                           ),
                         ),
@@ -552,7 +561,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                           onPressed: () {
                             displayRequestRideContainer();
                           },
-                          color: Theme.of(context).accentColor,
+                          color: Colors.redAccent[100],
                           child: Padding(
                             padding: EdgeInsets.all(17.0),
                             child: Row(
