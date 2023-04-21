@@ -108,7 +108,7 @@ class LoginScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              FlatButton(
+              TextButton(
                 child: Text('Do not have an Account ? Register Here'),
                 onPressed: () {
                   Navigator.pushNamedAndRemoveUntil(
@@ -152,13 +152,13 @@ class LoginScreen extends StatelessWidget {
           Navigator.pop(context);
           _firebaseAuth.signOut();
           displayToastMessage(
-              "No record exixts for this user. Please create new account",
+              "No record exist for this user. Please create new account",
               context);
         }
       });
     } else {
       Navigator.pop(context);
-      displayToastMessage("Error Occured, cannot log in", context);
+      displayToastMessage("Error occured, cannot log in", context);
     }
   }
 }

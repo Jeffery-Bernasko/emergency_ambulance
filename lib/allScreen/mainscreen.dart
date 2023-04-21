@@ -35,6 +35,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   Set<Polyline> polylineSet = {};
 
   Position currentPosition;
+
   var geolocator = Geolocator();
 
   double bottomPaddingOfMap = 0;
@@ -150,14 +151,14 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   //Function To Get Current User Position
   void locatePosition() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     currentPosition = position;
+
+
 
     print(currentPosition);
     print(position);
-    LatLng latLngPosition =
-        LatLng(currentPosition.latitude, currentPosition.longitude);
+    LatLng latLngPosition = LatLng(currentPosition.latitude, currentPosition.longitude);
 
     print(latLngPosition);
 
@@ -400,41 +401,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                           },
                         ),
                       ),
-                      // GestureDetector(
-                      // onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      // MaterialPageRoute(
-                      //   builder: (context) => SearchScreen()));
-                      //},
-                      /* child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(5.0),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black54,
-                                  blurRadius: 6.0,
-                                  spreadRadius: 0.5,
-                                  offset: Offset(0.7, 0.7))
-                            ],
-                          ),*/
-                      // child: Padding(
-                      // padding: const EdgeInsets.all(8.0),
-                      //child: Row(
-                      //children: [
-                      /* Icon(
-                                  Icons.search,
-                                  color: Colors.black,
-                                ),
-                                SizedBox(
-                                  width: 10.0,
-                                ),
-                                Text('Search Drop Off')*/
-                      //],
-                      //),
-                      //),
-                      //  ),
 
                       SizedBox(
                         height: 20.0,
@@ -557,11 +523,14 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
-                        child: RaisedButton(
+                        child: ElevatedButton(
                           onPressed: () {
                             displayRequestRideContainer();
                           },
-                          color: Colors.redAccent[100],
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.red[500]
+                          ),
+
                           child: Padding(
                             padding: EdgeInsets.all(17.0),
                             child: Row(

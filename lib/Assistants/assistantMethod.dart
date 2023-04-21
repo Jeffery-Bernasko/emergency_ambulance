@@ -44,14 +44,16 @@ class AssistantMethods {
 
   static Future<String> placeName(
       Position currentPosition, BuildContext context) async {
+    String place;
     String url =
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=${currentPosition.latitude},${currentPosition.longitude}&key=AIzaSyDoWSObQL_A27DQ_LjbXJmwNtmw1AWtuec";
 
     var response = await RequestAssistant.getRequest(url);
     // String place = response["plus_code"]["compound_code"];
-    String place = response["results"][0]["address_components"][0]["long_name"];
-    print(place);
-
+    if(response != 'failed') {
+      place = response["results"][0]["address_components"][0]["long_name"];
+      print(place);
+    }
     return place;
   }
 
@@ -92,7 +94,7 @@ class AssistantMethods {
     double totalFareAmount = timeTravelFare + distanceTravelFare;
 
     // 1$ to GHS
-    double totalLocalAmount = totalFareAmount * 6.00;
+    double totalLocalAmount = totalFareAmount * 12.00;
 
     return totalLocalAmount.truncate();
   }
